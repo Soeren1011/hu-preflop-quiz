@@ -1,0 +1,65 @@
+{
+  "success": true,
+  "files": [
+    {
+      "filename": "A0_SB.bin.gz",
+      "arrayIdx": 0,
+      "position": "SB",
+      "actionPath": "",
+      "scenario": "RFI",
+      "raiseCount": 0,
+      "callerCount": 0,
+      "actionDepth": 0
+    },
+    {
+      "filename": "A1_BB_SB100%.bin.gz",
+      "arrayIdx": 1,
+      "position": "BB",
+      "actionPath": "SB100%",
+      "scenario": "vsRFI",
+      "raiseCount": 1,
+      "callerCount": 0,
+      "actionDepth": 1
+    },
+    {
+      "filename": "A2_SB_SB100%-BB100%.bin.gz",
+      "arrayIdx": 2,
+      "position": "SB",
+      "actionPath": "SB100%-BB100%",
+      "scenario": "vs3BetAsRaiser",
+      "raiseCount": 2,
+      "callerCount": 0,
+      "actionDepth": 2
+    },
+    {
+      "filename": "A3_BB_SB100%-BB100%-SB100%.bin.gz",
+      "arrayIdx": 3,
+      "position": "BB",
+      "actionPath": "SB100%-BB100%-SB100%",
+      "scenario": "vs4Bet",
+      "raiseCount": 3,
+      "callerCount": 0,
+      "actionDepth": 3
+    },
+    {
+      "filename": "A4_SB_SB100%-BB100%-SB100%-BB100%.bin.gz",
+      "arrayIdx": 4,
+      "position": "SB",
+      "actionPath": "SB100%-BB100%-SB100%-BB100%",
+      "scenario": "vs5Bet+",
+      "raiseCount": 4,
+      "callerCount": 0,
+      "actionDepth": 4
+    },
+    {
+      "filename": "A5_BB_SB100%-BB100%-SB100%-BB100%-SB100%.bin.gz",
+      "arrayIdx": 5,
+      "position": "BB",
+      "actionPath": "SB100%-BB100%-SB100%-BB100%-SB100%",
+      "scenario": "vs5Bet+",
+      "raiseCount": 5,
+      "callerCount": 0,
+      "actionDepth": 5
+    }
+  ]
+}
