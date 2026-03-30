@@ -3,6 +3,5 @@
  */
 
 const CONFIG = {
-    // Local binary files
-    BINARY_BASE_URL: 'binary',
+    BINARY_BASE_URL: 'https://hu-preflop-quiz.netlify.app/binary',
 };
