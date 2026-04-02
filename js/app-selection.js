@@ -35,7 +35,7 @@ function renderScenarioGrid() {
                 </div>
                 <span class="stats-text">${stats.accuracy}% (${stats.total})</span>
             </div>
-        ` : `<div class="scenario-stats"><span class="stats-text stats-empty">Noch keine Daten</span></div>`;
+        ` : `<div class="scenario-stats"><span class="stats-text stats-empty">No data yet</span></div>`;
         
         return `<button class="selector-btn scenario-card" onclick="selectScenario('${sc.key}')">
             <div class="scenario-name">${sc.name}</div>

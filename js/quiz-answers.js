@@ -43,11 +43,6 @@ function submitModuleAnswer(moduleId, action) {
         StatsTracker.updateBestStreak(globalStats.bestStreak);
     }
 
-    // Track in training plan progress
-    if (typeof recordTrainingAnswer === 'function') {
-        recordTrainingAnswer(isCorrect);
-    }
-
     showModuleResult(moduleId, hand, action, isCorrect, best);
     updateModuleStats(moduleId);
     updateGlobalStats();

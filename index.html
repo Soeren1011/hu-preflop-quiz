@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HU Preflop Range Quiz</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🎯</text></svg>">
-    <link rel="stylesheet" href="css/styles.css?v=30">
+    <link rel="stylesheet" href="css/styles.css?v=31">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js" integrity="sha512-g2TeAWw5GPnX7z0Kn8nFbYfeHcvAu/tx6d6mrLe/90mkCxO+RcptyYpksUz35EO337F83bZwcmUyHiHamspkfg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
@@ -40,13 +40,11 @@
         <section id="spotSelector" class="spot-selector" aria-label="Spot selection wizard">
             <h2 class="selector-title">Select a Spot to Start Quiz</h2>
 
-            <!-- Training Plan Section (shown in training mode) -->
-            <div id="trainingPlanSection" style="display: none;"></div>
-
             <!-- Quiz Mode Tabs -->
             <div class="quiz-mode-tabs" role="tablist" aria-label="Quiz mode selection">
                 <button class="quiz-mode-tab active" data-mode="standard" role="tab" aria-selected="true">Standard Quiz</button>
                 <button class="quiz-mode-tab" data-mode="cutoff" role="tab" aria-selected="false">Cutoff Quiz</button>
+
             </div>
 
             <!-- Single Mode Spot Grid (shown in single mode) -->
@@ -54,14 +52,19 @@
 
             <!-- Standard Quiz Steps -->
             <div id="standardQuizSteps">
+            <!-- Multi Mode: Presets vs Custom toggle -->
+            <div id="multiModeToggle" class="multi-mode-toggle" style="display: none;">
+                <button class="multi-toggle-btn active" data-tab="presets">Presets</button>
+                <button class="multi-toggle-btn" data-tab="custom">Custom</button>
+            </div>
+
+            <!-- Multi Mode: Preset Categories -->
+            <div id="presetCategoriesSection" style="display: none;">
+                <div id="presetCategoriesGrid"></div>
+            </div>
+
             <div id="step1" class="selector-step" role="group" aria-label="Step 1: Choose scenario">
                 <div class="selector-grid" id="scenarioGrid" role="listbox" aria-label="Scenario options"></div>
-
-                <!-- Quicklinks Section -->
-                <div id="quicklinksSection" class="quicklinks-section">
-                    <div class="quicklinks-label">Quicklinks</div>
-                    <div class="quicklinks-grid" id="quicklinksGrid"></div>
-                </div>
             </div>
 
             <div id="step2" class="selector-step" style="display: none;" role="group" aria-label="Step 2: Choose your position">
@@ -88,31 +91,31 @@
             <div id="cutoffQuizMode" class="cutoff-quiz-mode" style="display: none;">
                 <div class="cutoff-quiz-intro">
                     <h3>Cutoff Quiz</h3>
-                    <p>Lerne die Grenzfaelle jeder Kategorie - die schwaechsten Haende die noch Raise/Call sind.</p>
+                    <p>Learn the borderline hands of each category - the weakest hands that are still Raise/Call.</p>
 
                     <div class="cutoff-spot-selector">
                         <div class="cutoff-step" id="cutoffStep1">
-                            <div class="step-label">1. Szenario waehlen:</div>
+                            <div class="step-label">1. Choose scenario:</div>
                             <div class="cutoff-scenario-grid" id="cutoffScenarioGrid"></div>
                         </div>
 
                         <div class="cutoff-step" id="cutoffStep2" style="display: none;">
-                            <button class="back-btn" id="cutoffBackToStep1">&#8592; Zurueck</button>
-                            <div class="step-label">2. Spot waehlen:</div>
+                            <button class="back-btn" id="cutoffBackToStep1">&#8592; Back</button>
+                            <div class="step-label">2. Choose spot:</div>
                             <div class="cutoff-spot-grid" id="cutoffSpotGrid"></div>
                         </div>
 
                         <div class="cutoff-step" id="cutoffStep3" style="display: none;">
-                            <button class="back-btn" id="cutoffBackToStep2">&#8592; Zurueck</button>
-                            <div class="step-label">3. Modus waehlen:</div>
+                            <button class="back-btn" id="cutoffBackToStep2">&#8592; Back</button>
+                            <div class="step-label">3. Choose mode:</div>
                             <div class="cutoff-mode-grid">
                                 <button class="cutoff-mode-btn" data-mode="threshold">
                                     <div class="mode-name">Threshold</div>
-                                    <div class="mode-desc">Ist Hand X ein Raise/Call/Fold?</div>
+                                    <div class="mode-desc">Is hand X a Raise/Call/Fold?</div>
                                 </button>
                                 <button class="cutoff-mode-btn" data-mode="identify">
                                     <div class="mode-name">Identify</div>
-                                    <div class="mode-desc">Was ist der Cutoff fuer Kategorie X?</div>
+                                    <div class="mode-desc">What is the cutoff for category X?</div>
                                 </button>
                             </div>
                         </div>
@@ -136,6 +139,7 @@
                     <button class="toggle-btn active" id="toggleMatching" aria-pressed="true" aria-label="Toggle matching hands display">M</button>
                     <button class="toggle-btn active" id="toggleEV" aria-pressed="true" aria-label="Toggle EV display">EV</button>
                 </div>
+                <button class="save-preset-btn" id="savePresetBtn" style="display:none;" title="Save current modules as preset">Save Preset</button>
             </div>
 
             <div class="quiz-next-container" id="quizNextContainer" style="text-align: center; margin-bottom: 15px;">
@@ -173,7 +177,7 @@
     <script src="js/app-state.js?v=4"></script>
     <script src="js/app-presets.js?v=3"></script>
     <script src="js/selection-core.js?v=2"></script>
-    <script src="js/app-quicklinks.js?v=2"></script>
+    <script src="js/app-quicklinks.js?v=3"></script>
     <script src="js/app-selection.js?v=8"></script>
     <script src="js/app-modules.js?v=13"></script>
     <script src="js/app-range-selector.js?v=5"></script>
@@ -188,10 +192,8 @@
     <script src="js/stats-dashboard.js?v=10"></script>
     <script src="js/stats-ui.js?v=1"></script>
     <!-- Quiz Mode System -->
-    <script src="js/quiz-mode-selector.js?v=6"></script>
-    <script src="js/training-plans.js?v=1"></script>
-    <script src="js/training-plan-ui.js?v=1"></script>
+    <script src="js/quiz-mode-selector.js?v=7"></script>
     <!-- Initialize -->
-    <script src="js/init.js?v=11"></script>
+    <script src="js/init.js?v=12"></script>
 </body>
 </html>

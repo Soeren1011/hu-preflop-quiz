@@ -23,6 +23,9 @@ function initEventListeners() {
     document.getElementById('nextBtn')?.addEventListener('click', nextQuestion);
     document.getElementById('nextMistakeBtn')?.addEventListener('click', nextMistake);
     document.getElementById('addRangeBtn')?.addEventListener('click', openRangeSelector);
+    document.getElementById('savePresetBtn')?.addEventListener('click', () => {
+        if (typeof promptSavePreset === 'function') promptSavePreset();
+    });
 
     // Quiz mode toggle (GTO vs Mixed strategy)
     document.getElementById('gtoModeBtn')?.addEventListener('click', () => {
@@ -252,7 +255,7 @@ async function startCutoffQuizForSpot(mode) {
     
     cutoffContainer.innerHTML = `
         <div id="cutoffQuizArea"></div>
-        <button class="end-cutoff-quiz-btn" id="endCutoffQuizBtn">← Quiz beenden</button>
+        <button class="end-cutoff-quiz-btn" id="endCutoffQuizBtn">← End Quiz</button>
     `;
     
     document.getElementById('endCutoffQuizBtn')?.addEventListener('click', () => {
@@ -595,7 +598,7 @@ async function startGuestMode() {
     var selectorTitle = document.querySelector('.selector-title');
     if (selectorTitle) selectorTitle.textContent = 'UTG Open Raise Quiz (Free)';
     // Hide spot selection steps
-    ['step1','step2','step3','step4','standardQuizSteps','cutoffQuizMode','singleModeSpotGrid','trainingPlanSection'].forEach(function(id) {
+    ['step1','step2','step3','step4','standardQuizSteps','cutoffQuizMode','singleModeSpotGrid'].forEach(function(id) {
         var el = document.getElementById(id);
         if (el) el.style.display = 'none';
     });

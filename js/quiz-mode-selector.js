@@ -1,18 +1,19 @@
 /**
  * PLO4 Range Quiz - Quiz Mode Selector
- * Manages Single/Multi/Trainingsplan mode selection and state
+ * Manages Single/Multi/NextStreet mode selection and state
  */
 
 const QUIZ_MODES = {
-    single: { id: 'single', name: 'Single', desc: 'Einen Spot fokussiert trainieren', icon: '🎯' },
-    multi: { id: 'multi', name: 'Multi', desc: 'Ranges vergleichen', icon: '📊' },
-    nextstreet: { id: 'nextstreet', name: 'Next Street', desc: 'Flop/Turn/River Quiz', icon: '🃏' },
-    training: { id: 'training', name: 'Trainingsplan', desc: 'Strukturierte Sessions', icon: '📋' }
+    single: { id: 'single', name: 'Single', desc: 'Focus on one spot', icon: '🎯' },
+    multi: { id: 'multi', name: 'Multi', desc: 'Compare ranges', icon: '📊' },
+    nextstreet: { id: 'nextstreet', name: 'Next Street', desc: 'Flop/Turn/River Quiz', icon: '🃏' }
 };
 
 const MODE_STORAGE_KEY = 'plo4quiz_mode_v1';
 
 let currentMode = localStorage.getItem(MODE_STORAGE_KEY) || 'single';
+// Fallback if stored mode no longer exists (e.g. removed 'training')
+if (!QUIZ_MODES[currentMode]) currentMode = 'single';
 
 function getQuizAppMode() {
     return currentMode;
@@ -64,78 +65,54 @@ function applyModeToUI(mode) {
     const spotSelector = document.getElementById('spotSelector');
     const standardSteps = document.getElementById('standardQuizSteps');
     const cutoffMode = document.getElementById('cutoffQuizMode');
-    const quicklinksSection = document.getElementById('quicklinksSection');
     const addRangeBtn = document.getElementById('addRangeBtn');
-    const trainingPlanSection = document.getElementById('trainingPlanSection');
     const quizModeTabs = document.querySelector('.quiz-mode-tabs');
     const singleModeGrid = document.getElementById('singleModeSpotGrid');
     const selectorTitle = document.querySelector('.selector-title');
-    const dashboard = document.getElementById('startpageDashboard');
     const nextStreetEl = document.getElementById('nextStreetPlaceholder');
 
     // Hide next street placeholder by default (shown only in nextstreet mode)
     if (nextStreetEl && mode !== 'nextstreet') nextStreetEl.style.display = 'none';
 
+    // Hide multi-mode elements by default
+    const multiToggle = document.getElementById('multiModeToggle');
+    const presetSection = document.getElementById('presetCategoriesSection');
+    if (multiToggle) multiToggle.style.display = 'none';
+    if (presetSection) presetSection.style.display = 'none';
+
     if (mode === 'single') {
         // Single mode: clean, focused - spot grid first, dashboard collapsed below
         if (standardSteps) standardSteps.style.display = 'none';
         if (cutoffMode) cutoffMode.style.display = 'none';
-        if (quicklinksSection) quicklinksSection.style.display = 'none';
         if (addRangeBtn) addRangeBtn.style.display = 'none';
-        if (trainingPlanSection) trainingPlanSection.style.display = 'none';
         if (quizModeTabs) quizModeTabs.style.display = 'none';
         if (singleModeGrid) singleModeGrid.style.display = 'block';
         if (spotSelector) spotSelector.style.display = 'block';
         if (selectorTitle) selectorTitle.style.display = 'none';
-        if (dashboard) {
-            dashboard.classList.add('collapsed');
-            dashboard.classList.remove('expanded');
-            // Move spot grid before dashboard for visual priority
-            if (singleModeGrid && singleModeGrid.parentNode === dashboard.parentNode) {
-                dashboard.parentNode.insertBefore(singleModeGrid, dashboard);
-            }
-        }
         renderSingleModeUI();
     } else if (mode === 'multi') {
-        // Multi mode: show everything (default behavior)
+        // Multi mode: preset categories + custom wizard
         if (standardSteps) standardSteps.style.display = 'block';
         if (cutoffMode) cutoffMode.style.display = 'none';
-        if (quicklinksSection) quicklinksSection.style.display = '';
         if (addRangeBtn) addRangeBtn.style.display = '';
-        if (trainingPlanSection) trainingPlanSection.style.display = 'none';
         if (quizModeTabs) quizModeTabs.style.display = 'flex';
         if (singleModeGrid) singleModeGrid.style.display = 'none';
         if (spotSelector) spotSelector.style.display = 'block';
-        if (selectorTitle) selectorTitle.style.display = '';
-        if (dashboard) dashboard.classList.remove('collapsed');
+        if (selectorTitle) selectorTitle.style.display = 'none';
+        // Show multi mode toggle and apply current tab
+        if (multiToggle) multiToggle.style.display = 'flex';
+        if (typeof initMultiModeToggle === 'function') initMultiModeToggle();
+        if (typeof applyMultiModeTab === 'function') applyMultiModeTab();
     } else if (mode === 'nextstreet') {
         // Next Street mode: placeholder - coming soon
         if (standardSteps) standardSteps.style.display = 'none';
         if (cutoffMode) cutoffMode.style.display = 'none';
-        if (quicklinksSection) quicklinksSection.style.display = 'none';
         if (addRangeBtn) addRangeBtn.style.display = 'none';
-        if (trainingPlanSection) trainingPlanSection.style.display = 'none';
         if (quizModeTabs) quizModeTabs.style.display = 'none';
         if (singleModeGrid) singleModeGrid.style.display = 'none';
         if (spotSelector) spotSelector.style.display = 'block';
         if (selectorTitle) selectorTitle.style.display = 'none';
-        if (dashboard) { dashboard.classList.add('collapsed'); dashboard.classList.remove('expanded'); }
         renderNextStreetPlaceholder();
-    } else if (mode === 'training') {
-        // Training mode: hide spot selector, show training plan
-        if (standardSteps) standardSteps.style.display = 'none';
-        if (cutoffMode) cutoffMode.style.display = 'none';
-        if (quicklinksSection) quicklinksSection.style.display = 'none';
-        if (addRangeBtn) addRangeBtn.style.display = 'none';
-        if (trainingPlanSection) trainingPlanSection.style.display = 'block';
-        if (quizModeTabs) quizModeTabs.style.display = 'none';
-        if (singleModeGrid) singleModeGrid.style.display = 'none';
-        if (spotSelector) spotSelector.style.display = 'block';
-        if (selectorTitle) selectorTitle.style.display = '';
-        if (dashboard) dashboard.classList.remove('collapsed');
-        if (typeof renderTrainingPlanUI === 'function') {
-            renderTrainingPlanUI();
-        }
     }
 }
 
@@ -149,9 +126,7 @@ function renderNextStreetPlaceholder() {
         container.id = 'nextStreetPlaceholder';
         const spotSelector = document.getElementById('spotSelector');
         if (spotSelector) {
-            const dashboard = document.getElementById('startpageDashboard');
-            if (dashboard) spotSelector.insertBefore(container, dashboard);
-            else spotSelector.appendChild(container);
+            spotSelector.appendChild(container);
         }
     }
     container.style.display = 'block';
@@ -159,7 +134,7 @@ function renderNextStreetPlaceholder() {
         <div class="next-street-placeholder">
             <div class="placeholder-icon">🃏</div>
             <h3>Next Street Quiz</h3>
-            <p>Flop, Turn & River Entscheidungen trainieren.</p>
+            <p>Practice Flop, Turn & River decisions.</p>
             <span class="placeholder-badge">Coming Soon</span>
         </div>
     `;
@@ -421,10 +396,13 @@ function buildGroupedSpotButtons(spots, labelFn) {
  * Called from quiz-core.js startQuiz()
  */
 function applyModeToQuiz() {
+    const savePresetBtn = document.getElementById('savePresetBtn');
     if (currentMode === 'single') {
-        // Hide add range button during quiz
         const addRangeBtn = document.getElementById('addRangeBtn');
         if (addRangeBtn) addRangeBtn.style.display = 'none';
+        if (savePresetBtn) savePresetBtn.style.display = 'none';
+    } else if (currentMode === 'multi') {
+        if (savePresetBtn) savePresetBtn.style.display = '';
     }
 }
 
