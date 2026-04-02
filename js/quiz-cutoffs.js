@@ -77,7 +77,7 @@ function generateCutoffQuestion(options = {}) {
             askedCategories = []; // Reset for next round
             return {
                 type: 'complete',
-                message: 'Alle Kategorien für diesen Spot abgefragt! 🎉',
+                message: 'All categories for this spot completed!',
                 stats: cutoffQuizState
             };
         }
@@ -262,13 +262,13 @@ function buildExplanation(catData, cutoff, correctAction) {
     const { stats, name } = catData;
     const ranksSorted = getRanksSorted(cutoff.notation);
     
-    let text = `<strong>${name}</strong> in diesem Spot:\n`;
+    let text = `<strong>${name}</strong> in this spot:\n`;
     text += `• ${stats.raise.toFixed(1)}% Raise`;
     if (stats.call > 0) text += ` / ${stats.call.toFixed(1)}% Call`;
     text += ` / ${stats.fold.toFixed(1)}% Fold\n\n`;
     
-    text += `<strong>${ranksSorted}</strong> (${cutoff.suitedness}) ist der Cutoff für ${correctAction}.\n`;
-    text += `Frequenz: ${cutoff.freq}% | EV: ${cutoff.ev}`;
+    text += `<strong>${ranksSorted}</strong> (${cutoff.suitedness}) is the cutoff for ${correctAction}.\n`;
+    text += `Frequency: ${cutoff.freq}% | EV: ${cutoff.ev}`;
     
     return text;
 }
@@ -276,7 +276,7 @@ function buildExplanation(catData, cutoff, correctAction) {
 // Render cutoff quiz UI
 function renderCutoffQuiz(container, question) {
     if (!question) {
-        container.innerHTML = '<div class="error">Keine Quiz-Frage verfügbar</div>';
+        container.innerHTML = '<div class="error">No quiz question available</div>';
         return;
     }
     
@@ -380,10 +380,10 @@ function handleCutoffAnswer(container, answer) {
     feedback.classList.remove('hidden');
     feedback.innerHTML = `
         <div class="feedback-result ${isCorrect ? 'correct' : 'incorrect'}">
-            ${isCorrect ? '✓ Richtig!' : `✗ Falsch - Richtig war: ${question.correct}`}
+            ${isCorrect ? '✓ Correct!' : `✗ Wrong - Correct was: ${question.correct}`}
         </div>
         <div class="feedback-explanation">${question.explanation}</div>
-        <button class="next-question-btn">Nächste Frage →</button>
+        <button class="next-question-btn">Next Question →</button>
     `;
     
     // Add next question handler
@@ -415,12 +415,12 @@ async function initCutoffQuiz(containerId, options = {}) {
     cutoffQuizState.score = 0;
     cutoffQuizState.total = 0;
     
-    container.innerHTML = '<div class="loading">Lade Cutoff-Daten...</div>';
+    container.innerHTML = '<div class="loading">Loading cutoff data...</div>';
     
     await loadCutoffData();
     
     if (!cutoffData) {
-        container.innerHTML = '<div class="error">Cutoff-Daten konnten nicht geladen werden</div>';
+        container.innerHTML = '<div class="error">Failed to load cutoff data</div>';
         return;
     }
     
